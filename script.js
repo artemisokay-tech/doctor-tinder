@@ -174,7 +174,7 @@ class DoctorCardManager {
                 experience: '8 лет',
                 description: 'Специалист по диагностике и лечению заболеваний нервной системы. Владеет современными методами лечения.',
                 price: '2 500 ₽',
-                photo: 'doctors_photo/doctor1.jpg',
+                photo: 'doctor1.jpg',
                 slots: ['10:00', '12:30', '15:00']
             },
             {
@@ -184,7 +184,7 @@ class DoctorCardManager {
                 experience: '12 лет',
                 description: 'Врач высшей категории. Специализируется на лечении мигрени, невралгии и вегетососудистой дистонии.',
                 price: '3 200 ₽',
-                photo: 'doctors_photo/doctor2.jpg',
+                photo: 'doctor2.jpg',
                 slots: ['09:00', '11:30', '14:00']
             },
             {
@@ -194,7 +194,7 @@ class DoctorCardManager {
                 experience: '15 лет',
                 description: 'Доктор медицинских наук. Эксперт в области нейрореабилитации и лечения инсультов.',
                 price: '4 500 ₽',
-                photo: 'doctors_photo/doctor3.jpg',
+                photo: 'doctor3.jpg',
                 slots: ['08:30', '13:00', '16:30']
             }
         ];
