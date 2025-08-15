@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СберЗдоровье - Подбор врача</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>СберЗдоровье</h1>
+                <p>Найдите своего врача</p>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="cards-container">
+                <!-- Карточка 1 -->
+                <div class="doctor-card active" data-doctor="1">
+                    <div class="card-image">
+                        <img src="doctors_photo/doctor1.jpg" alt="Доктор Иван Иванов">
+                    </div>
+                    <div class="card-content">
+                        <h2 class="doctor-name">Иван Иванов</h2>
+                        <p class="doctor-specialty">Невролог</p>
+                        <p class="doctor-experience">Опыт работы: 8 лет</p>
+                        <p class="doctor-description">Специалист по диагностике и лечению заболеваний нервной системы. Владеет современными методами лечения.</p>
+                        <div class="price-section">
+                            <span class="price">2 500 ₽</span>
+                            <span class="price-label">за приём</span>
+                        </div>
+                        <div class="time-slots">
+                            <h3>Свободные слоты на сегодня:</h3>
+                            <div class="slots">
+                                <button class="time-slot" data-time="10:00">10:00</button>
+                                <button class="time-slot" data-time="12:30">12:30</button>
+                                <button class="time-slot" data-time="15:00">15:00</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 2 -->
+                <div class="doctor-card" data-doctor="2">
+                    <div class="card-image">
+                        <img src="doctors_photo/doctor2.jpg" alt="Доктор Ольга Петрова">
+                    </div>
+                    <div class="card-content">
+                        <h2 class="doctor-name">Ольга Петрова</h2>
+                        <p class="doctor-specialty">Невролог</p>
+                        <p class="doctor-experience">Опыт работы: 12 лет</p>
+                        <p class="doctor-description">Врач высшей категории. Специализируется на лечении мигрени, невралгии и вегетососудистой дистонии.</p>
+                        <div class="price-section">
+                            <span class="price">3 200 ₽</span>
+                            <span class="price-label">за приём</span>
+                        </div>
+                        <div class="time-slots">
+                            <h3>Свободные слоты на сегодня:</h3>
+                            <div class="slots">
+                                <button class="time-slot" data-time="09:00">09:00</button>
+                                <button class="time-slot" data-time="11:30">11:30</button>
+                                <button class="time-slot" data-time="14:00">14:00</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 3 -->
+                <div class="doctor-card" data-doctor="3">
+                    <div class="card-image">
+                        <img src="doctors_photo/doctor3.jpg" alt="Доктор Ольга Смирнова">
+                    </div>
+                    <div class="card-content">
+                        <h2 class="doctor-name">Ольга Смирнова</h2>
+                        <p class="doctor-specialty">Невролог</p>
+                        <p class="doctor-experience">Опыт работы: 15 лет</p>
+                        <p class="doctor-description">Доктор медицинских наук. Эксперт в области нейрореабилитации и лечения инсультов.</p>
+                        <div class="price-section">
+                            <span class="price">4 500 ₽</span>
+                            <span class="price-label">за приём</span>
+                        </div>
+                        <div class="time-slots">
+                            <h3>Свободные слоты на сегодня:</h3>
+                            <div class="slots">
+                                <button class="time-slot" data-time="08:30">08:30</button>
+                                <button class="time-slot" data-time="13:00">13:00</button>
+                                <button class="time-slot" data-time="16:30">16:30</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn dislike-btn" id="dislikeBtn">
+                    <span class="btn-icon">✕</span>
+                </button>
+                <button class="action-btn like-btn" id="likeBtn">
+                    <span class="btn-icon">♥</span>
+                </button>
+            </div>
+
+            <div class="swipe-instructions">
+                <p>Свайпните карточку влево или вправо, или используйте кнопки ниже</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно выбора слотов -->
+    <div class="modal" id="slotsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Выберите удобное время</h2>
+                <button class="close-modal" id="closeSlotsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="doctor-info-summary">
+                    <img src="" alt="Фото врача" id="modalDoctorPhoto" class="modal-doctor-photo">
+                    <div class="doctor-details">
+                        <h3 id="modalDoctorName"></h3>
+                        <p id="modalDoctorSpecialty"></p>
+                        <p id="modalDoctorPrice"></p>
+                    </div>
+                </div>
+                <div class="available-slots">
+                    <h3>Доступные слоты на сегодня:</h3>
+                    <div class="slots-grid" id="modalSlotsGrid">
+                        <!-- Слоты будут добавлены динамически -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно формы записи -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Запись на приём</h2>
+                <button class="close-modal" id="closeBookingModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="booking-summary">
+                    <h3>Подтвердите детали записи:</h3>
+                    <div class="booking-details">
+                        <p><strong>Врач:</strong> <span id="bookingDoctorName"></span></p>
+                        <p><strong>Время:</strong> <span id="bookingTime"></span></p>
+                        <p><strong>Дата:</strong> <span id="bookingDate"></span></p>
+                        <p><strong>Стоимость:</strong> <span id="bookingPrice"></span></p>
+                    </div>
+                </div>
+                <form class="booking-form" id="bookingForm">
+                    <div class="form-group">
+                        <label for="phoneNumber">Номер телефона:</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="+7 (999) 123-45-67" required>
+                        <div class="error-message" id="phoneError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="backToSlots">Назад к слотам</button>
+                        <button type="submit" class="btn-primary">Записаться</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно успешной записи -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="modal-header">
+                <h2>✅ Запись успешно создана!</h2>
+                <button class="close-modal" id="closeSuccessModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="success-content">
+                    <div class="success-icon">🎉</div>
+                    <h3>Ваша запись подтверждена</h3>
+                    <div class="appointment-details">
+                        <p><strong>Врач:</strong> <span id="successDoctorName"></span></p>
+                        <p><strong>Специализация:</strong> <span id="successSpecialty"></span></p>
+                        <p><strong>Дата и время:</strong> <span id="successDateTime"></span></p>
+                        <p><strong>Стоимость:</strong> <span id="successPrice"></span></p>
+                        <p><strong>Номер телефона:</strong> <span id="successPhone"></span></p>
+                    </div>
+                    <div class="success-message">
+                        <p>Мы отправили подтверждение на ваш номер телефона. За 2 часа до приёма вы получите напоминание.</p>
+                    </div>
+                    <button class="btn-primary" id="finishBooking">Завершить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
