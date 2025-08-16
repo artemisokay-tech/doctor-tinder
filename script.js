@@ -576,41 +576,41 @@ class DoctorCardManager {
         
         // Обработчик ввода
         phoneInput.addEventListener('input', (e) => {
-            let value = e.target.value;
-            let digits = value.replace(/\D/g, ''); // Убираем все нецифры
+            let value = e.target.value.replace(/\D/g, ''); // Убираем все нецифры
             
-            // Ограничиваем до 10 цифр
-            if (digits.length > 10) {
-                digits = digits.substring(0, 10);
+            // Ограничиваем до 11 цифр (7 + 10 цифр номера)
+            if (value.length > 11) {
+                value = value.substring(0, 11);
             }
             
             // Форматируем номер
             let formattedValue = '+7 (';
             
-            if (digits.length > 0) {
-                // Добавляем код оператора
-                formattedValue += digits.substring(0, 3);
+            if (value.length > 1) { // Пропускаем первую 7 (код страны)
+                const phoneDigits = value.substring(1); // Берем только цифры номера
                 
-                if (digits.length > 3) {
-                    formattedValue += ') ';
-                    formattedValue += digits.substring(3, 6);
+                if (phoneDigits.length > 0) {
+                    // Добавляем код оператора
+                    formattedValue += phoneDigits.substring(0, 3);
                     
-                    if (digits.length > 6) {
-                        formattedValue += '-';
-                        formattedValue += digits.substring(6, 8);
+                    if (phoneDigits.length > 3) {
+                        formattedValue += ') ';
+                        formattedValue += phoneDigits.substring(3, 6);
                         
-                        if (digits.length > 8) {
+                        if (phoneDigits.length > 6) {
                             formattedValue += '-';
-                            formattedValue += digits.substring(8, 10);
+                            formattedValue += phoneDigits.substring(6, 8);
+                            
+                            if (phoneDigits.length > 8) {
+                                formattedValue += '-';
+                                formattedValue += phoneDigits.substring(8, 10);
+                            }
                         }
                     }
                 }
             }
             
-            // Обновляем значение только если оно изменилось
-            if (e.target.value !== formattedValue) {
-                e.target.value = formattedValue;
-            }
+            e.target.value = formattedValue;
         });
         
         // Обработчик удаления
@@ -624,28 +624,6 @@ class DoctorCardManager {
                     e.preventDefault();
                     return;
                 }
-                
-                // Если удаляем символ после цифры, удаляем всю цифру
-                if (cursorPosition > 4 && cursorPosition < value.length) {
-                    const charBeforeCursor = value[cursorPosition - 1];
-                    if (/\d/.test(charBeforeCursor)) {
-                        // Удаляем последнюю цифру
-                        const currentDigits = value.replace(/\D/g, '');
-                        const newDigits = currentDigits.slice(0, -1);
-                        
-                        // Переформатируем номер
-                        setTimeout(() => {
-                            if (newDigits.length > 0) {
-                                phoneInput.value = this.formatPhoneNumber(newDigits);
-                            } else {
-                                phoneInput.value = '+7 (';
-                            }
-                            // Устанавливаем курсор в конец
-                            phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
-                        }, 0);
-                        e.preventDefault();
-                    }
-                }
             }
         });
         
@@ -653,10 +631,16 @@ class DoctorCardManager {
         phoneInput.addEventListener('paste', (e) => {
             e.preventDefault();
             const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            const digits = pastedText.replace(/\D/g, '').substring(0, 10);
+            const digits = pastedText.replace(/\D/g, '').substring(0, 11);
             
             if (digits.length > 0) {
-                phoneInput.value = this.formatPhoneNumber(digits);
+                // Если вставляем номер без кода страны, добавляем 7
+                let fullDigits = digits;
+                if (digits.length === 10) {
+                    fullDigits = '7' + digits;
+                }
+                
+                phoneInput.value = this.formatPhoneNumber(fullDigits);
                 phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
             }
         });
@@ -704,21 +688,25 @@ class DoctorCardManager {
     formatPhoneNumber(digits) {
         let formattedValue = '+7 (';
         
-        if (digits.length > 0) {
-            // Добавляем код оператора
-            formattedValue += digits.substring(0, 3);
+        if (digits.length > 1) { // Пропускаем первую 7 (код страны)
+            const phoneDigits = digits.substring(1); // Берем только цифры номера
             
-            if (digits.length > 3) {
-                formattedValue += ') ';
-                formattedValue += digits.substring(3, 6);
+            if (phoneDigits.length > 0) {
+                // Добавляем код оператора
+                formattedValue += phoneDigits.substring(0, 3);
                 
-                if (digits.length > 6) {
-                    formattedValue += '-';
-                    formattedValue += digits.substring(6, 8);
+                if (phoneDigits.length > 3) {
+                    formattedValue += ') ';
+                    formattedValue += phoneDigits.substring(3, 6);
                     
-                    if (digits.length > 8) {
+                    if (phoneDigits.length > 6) {
                         formattedValue += '-';
-                        formattedValue += digits.substring(8, 10);
+                        formattedValue += phoneDigits.substring(6, 8);
+                        
+                        if (phoneDigits.length > 8) {
+                            formattedValue += '-';
+                            formattedValue += phoneDigits.substring(8, 10);
+                        }
                     }
                 }
             }
@@ -925,6 +913,13 @@ class DoctorCardManager {
         
         if (!phoneRegex.test(phoneNumber)) {
             this.showError('phoneNumber', 'Номер должен быть в формате +7 (XXX) XXX-XX-XX');
+            return;
+        }
+        
+        // Дополнительная проверка на 11 цифр
+        const digits = phoneNumber.replace(/\D/g, '');
+        if (digits.length !== 11) {
+            this.showError('phoneNumber', 'Номер должен содержать 11 цифр (включая код страны 7)');
             return;
         }
         

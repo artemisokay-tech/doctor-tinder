@@ -1135,16 +1135,27 @@ body {
     }
     
     .specialty-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr); /* Оставляем 2 колонки на мобильных */
+        gap: 10px; /* Уменьшаем отступы для мобильных */
     }
     
     .specialty-item {
-        padding: 12px;
+        padding: 10px; /* Уменьшаем padding для мобильных */
     }
     
     .specialty-icon {
-        font-size: 2rem;
+        font-size: 1.8rem; /* Уменьшаем размер иконок */
+        margin-bottom: 10px;
+    }
+    
+    .specialty-item h3 {
+        font-size: 1rem; /* Уменьшаем размер заголовков */
+        margin-bottom: 8px;
+    }
+    
+    .specialty-item p {
+        font-size: 0.75rem; /* Уменьшаем размер описания */
+        line-height: 1.3;
     }
     
     .back-btn {
