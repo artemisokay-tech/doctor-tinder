@@ -989,3 +989,166 @@ body {
         padding: 10px !important;
     }
 }
+
+/* Страница выбора специальности */
+.specialty-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-title h1 {
+    color: #21A038;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.page-title p {
+    color: #666;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.specialty-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.specialty-item {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.specialty-item:hover {
+    border-color: #21A038;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(33, 160, 56, 0.2);
+}
+
+.specialty-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.specialty-item h3 {
+    color: #21A038;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.specialty-item p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.back-to-main {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.back-btn {
+    background: #21A038;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(33, 160, 56, 0.3);
+}
+
+.back-btn:hover {
+    background: #1D8836;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 160, 56, 0.4);
+}
+
+/* Адаптивность для страницы специальностей */
+@media (max-width: 768px) {
+    .specialty-page {
+        padding: 15px;
+    }
+    
+    .page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .page-title p {
+        font-size: 1rem;
+    }
+    
+    .specialty-grid {
+        gap: 15px;
+    }
+    
+    .specialty-item {
+        padding: 15px;
+    }
+    
+    .specialty-icon {
+        font-size: 2.5rem;
+    }
+    
+    .specialty-item h3 {
+        font-size: 1.1rem;
+    }
+    
+    .specialty-item p {
+        font-size: 0.8rem;
+    }
+    
+    .back-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .specialty-page {
+        padding: 10px;
+    }
+    
+    .page-title h1 {
+        font-size: 1.8rem;
+    }
+    
+    .page-title p {
+        font-size: 0.9rem;
+    }
+    
+    .specialty-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .specialty-item {
+        padding: 12px;
+    }
+    
+    .specialty-icon {
+        font-size: 2rem;
+    }
+    
+    .back-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}

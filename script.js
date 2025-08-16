@@ -156,60 +156,352 @@ function showAllDoctors() {
 
 class DoctorCardManager {
     constructor() {
-        this.cards = document.querySelectorAll('.doctor-card');
+        this.cards = [];
         this.currentCardIndex = 0;
-        this.isDragging = false;
-        this.startX = 0;
-        this.startY = 0;
-        this.currentX = 0;
-        this.currentY = 0;
-        this.initialTransform = '';
-        
-        // Данные о врачах с локальными фотографиями
-        this.doctorsData = [
-            {
-                id: 1,
-                name: 'Иван Иванов',
-                specialty: 'Невролог',
-                experience: '8 лет',
-                description: 'Специалист по диагностике и лечению заболеваний нервной системы. Владеет современными методами лечения.',
-                price: '2 500 ₽',
-                photo: 'doctor1.jpg',
-                slots: ['10:00', '12:30', '15:00']
-            },
-            {
-                id: 2,
-                name: 'Ольга Петрова',
-                specialty: 'Невролог',
-                experience: '12 лет',
-                description: 'Врач высшей категории. Специализируется на лечении мигрени, невралгии и вегетососудистой дистонии.',
-                price: '3 200 ₽',
-                photo: 'doctor2.jpg',
-                slots: ['09:00', '11:30', '14:00']
-            },
-            {
-                id: 3,
-                name: 'Ольга Смирнова',
-                specialty: 'Невролог',
-                experience: '15 лет',
-                description: 'Доктор медицинских наук. Эксперт в области нейрореабилитации и лечения инсультов.',
-                price: '4 500 ₽',
-                photo: 'doctor3.jpg',
-                slots: ['08:30', '13:00', '16:30']
-            }
-        ];
-        
         this.selectedDoctor = null;
         this.selectedTime = null;
+        this.isDragging = false;
+        this.startX = 0;
+        this.currentX = 0;
+        this.initialTransform = '';
+        
+        // Данные врачей по специальностям
+        this.doctorsBySpecialty = {
+            'Терапевты': [
+                {
+                    id: 1,
+                    name: 'Семенов Александр Сергеевич',
+                    specialty: 'Терапевт',
+                    experience: 'Опыт работы: 12 лет',
+                    description: 'Врач высшей категории. Специалист по диагностике и лечению внутренних болезней.',
+                    price: '2 000 ₽',
+                    photo: 'therapist_1.jpg',
+                    slots: ['09:00', '11:30', '14:00', '16:30']
+                },
+                {
+                    id: 2,
+                    name: 'Смагин Андрей Игоревич',
+                    specialty: 'Терапевт',
+                    experience: 'Опыт работы: 8 лет',
+                    description: 'Молодой специалист с современным подходом к лечению. Специализируется на профилактике заболеваний.',
+                    price: '1 800 ₽',
+                    photo: 'therapist_2.jpg',
+                    slots: ['10:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 3,
+                    name: 'Сусь Анна Сергеевна',
+                    specialty: 'Терапевт',
+                    experience: 'Опыт работы: 15 лет',
+                    description: 'Доктор медицинских наук. Эксперт в области кардиологии и пульмонологии.',
+                    price: '2 500 ₽',
+                    photo: 'therapist_3.jpg',
+                    slots: ['08:30', '11:00', '13:30', '16:00']
+                }
+            ],
+            'Педиатры': [
+                {
+                    id: 1,
+                    name: 'Фомина Ольга Ивановна',
+                    specialty: 'Педиатр',
+                    experience: 'Опыт работы: 18 лет',
+                    description: 'Врач высшей категории. Специалист по лечению детей всех возрастов.',
+                    price: '2 200 ₽',
+                    photo: 'pediatrician_1.jpg',
+                    slots: ['09:00', '11:00', '14:00', '16:00']
+                },
+                {
+                    id: 2,
+                    name: 'Иванов Илья Степанович',
+                    specialty: 'Педиатр',
+                    experience: 'Опыт работы: 10 лет',
+                    description: 'Молодой педиатр с современными методами диагностики и лечения.',
+                    price: '1 900 ₽',
+                    photo: 'pediatrician_2.jpg',
+                    slots: ['10:00', '12:30', '15:00', '17:30']
+                },
+                {
+                    id: 3,
+                    name: 'Иосса Александр Владимирович',
+                    specialty: 'Педиатр',
+                    experience: 'Опыт работы: 20 лет',
+                    description: 'Доктор медицинских наук. Эксперт в области детской кардиологии.',
+                    price: '2 800 ₽',
+                    photo: 'pediatrician_3.jpg',
+                    slots: ['08:00', '10:30', '13:00', '15:30']
+                }
+            ],
+            'Стоматологи': [
+                {
+                    id: 1,
+                    name: 'Латвеев Юрий Викторович',
+                    specialty: 'Стоматолог',
+                    experience: 'Опыт работы: 14 лет',
+                    description: 'Врач-стоматолог высшей категории. Специалист по терапевтической стоматологии.',
+                    price: '3 500 ₽',
+                    photo: 'dentist_1.jpg',
+                    slots: ['09:00', '11:00', '14:00', '16:00']
+                },
+                {
+                    id: 2,
+                    name: 'Пражкин Кирилл Анатольевич',
+                    specialty: 'Стоматолог',
+                    experience: 'Опыт работы: 9 лет',
+                    description: 'Молодой стоматолог-ортопед. Специализируется на протезировании и имплантации.',
+                    price: '4 200 ₽',
+                    photo: 'dentist_2.jpg',
+                    slots: ['10:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 3,
+                    name: 'Надеждина Анастасия Ивановна',
+                    specialty: 'Стоматолог',
+                    experience: 'Опыт работы: 16 лет',
+                    description: 'Врач-стоматолог-хирург. Эксперт в области хирургической стоматологии.',
+                    price: '5 000 ₽',
+                    photo: 'dentist_3.jpg',
+                    slots: ['08:30', '11:30', '14:30', '16:30']
+                }
+            ],
+            'Хирурги': [
+                {
+                    id: 1,
+                    name: 'Резакова Ольга Петровна',
+                    specialty: 'Хирург',
+                    experience: 'Опыт работы: 22 года',
+                    description: 'Врач-хирург высшей категории. Специалист по общей хирургии.',
+                    price: '4 500 ₽',
+                    photo: 'surgeon_1.jpg',
+                    slots: ['09:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 2,
+                    name: 'Зашивалов Артем Борисович',
+                    specialty: 'Хирург',
+                    experience: 'Опыт работы: 11 лет',
+                    description: 'Молодой хирург-онколог. Специализируется на малоинвазивных операциях.',
+                    price: '5 500 ₽',
+                    photo: 'surgeon_2.jpg',
+                    slots: ['10:00', '13:00', '16:00', '18:00']
+                },
+                {
+                    id: 3,
+                    name: 'Норкина Алла Борисовна',
+                    specialty: 'Хирург',
+                    experience: 'Опыт работы: 25 лет',
+                    description: 'Доктор медицинских наук. Эксперт в области сосудистой хирургии.',
+                    price: '6 000 ₽',
+                    photo: 'surgeon_3.jpg',
+                    slots: ['08:00', '11:00', '14:00', '16:00']
+                }
+            ],
+            'Кардиологи': [
+                {
+                    id: 1,
+                    name: 'Сквошина Анастасия Ивановна',
+                    specialty: 'Кардиолог',
+                    experience: 'Опыт работы: 16 лет',
+                    description: 'Врач-кардиолог высшей категории. Специалист по диагностике сердечно-сосудистых заболеваний.',
+                    price: '4 000 ₽',
+                    photo: 'cardiologist_1.jpg',
+                    slots: ['09:00', '11:30', '14:00', '16:30']
+                },
+                {
+                    id: 2,
+                    name: 'Лобанов Сергей Сергеевич',
+                    specialty: 'Кардиолог',
+                    experience: 'Опыт работы: 19 лет',
+                    description: 'Доктор медицинских наук. Эксперт в области интервенционной кардиологии.',
+                    price: '5 500 ₽',
+                    photo: 'cardiologist_2.jpg',
+                    slots: ['10:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 3,
+                    name: 'Пульсин Глеб Валентинович',
+                    specialty: 'Кардиолог',
+                    experience: 'Опыт работы: 13 лет',
+                    description: 'Молодой кардиолог. Специализируется на лечении аритмий.',
+                    price: '3 800 ₽',
+                    photo: 'cardiologist_3.jpg',
+                    slots: ['08:30', '11:00', '13:30', '16:00']
+                }
+            ],
+            'Онкологи': [
+                {
+                    id: 1,
+                    name: 'Путев Игнат Джанбекович',
+                    specialty: 'Онколог',
+                    experience: 'Опыт работы: 20 лет',
+                    description: 'Врач-онколог высшей категории. Специалист по диагностике и лечению рака.',
+                    price: '6 000 ₽',
+                    photo: 'oncologist_1.jpg',
+                    slots: ['09:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 2,
+                    name: 'Зарубина Яна Антоновна',
+                    specialty: 'Онколог',
+                    experience: 'Опыт работы: 14 лет',
+                    description: 'Молодой онколог-химиотерапевт. Специализируется на таргетной терапии.',
+                    price: '5 200 ₽',
+                    photo: 'oncologist_2.jpg',
+                    slots: ['10:00', '13:00', '16:00', '18:00']
+                },
+                {
+                    id: 3,
+                    name: 'Байцаев Заурбек Юрьевич',
+                    specialty: 'Онколог',
+                    experience: 'Опыт работы: 28 лет',
+                    description: 'Доктор медицинских наук. Эксперт в области хирургической онкологии.',
+                    price: '7 500 ₽',
+                    photo: 'oncologist_3.jpg',
+                    slots: ['08:00', '11:00', '14:00', '16:00']
+                }
+            ],
+            'Эндокринологи': [
+                {
+                    id: 1,
+                    name: 'Защитина Елизавета Павловна',
+                    specialty: 'Эндокринолог',
+                    experience: 'Опыт работы: 17 лет',
+                    description: 'Врач-эндокринолог высшей категории. Специалист по лечению сахарного диабета.',
+                    price: '3 800 ₽',
+                    photo: 'endocrinologist_1.jpg',
+                    slots: ['09:00', '11:30', '14:00', '16:30']
+                },
+                {
+                    id: 2,
+                    name: 'Трубин Михаил Семенович',
+                    specialty: 'Эндокринолог',
+                    experience: 'Опыт работы: 12 лет',
+                    description: 'Молодой эндокринолог. Специализируется на заболеваниях щитовидной железы.',
+                    price: '3 200 ₽',
+                    photo: 'endocrinologist_2.jpg',
+                    slots: ['10:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 3,
+                    name: 'Бжассо Виктор Альбертович',
+                    specialty: 'Эндокринолог',
+                    experience: 'Опыт работы: 23 года',
+                    description: 'Доктор медицинских наук. Эксперт в области детской эндокринологии.',
+                    price: '4 500 ₽',
+                    photo: 'endocrinologist_3.jpg',
+                    slots: ['08:30', '11:00', '13:30', '16:00']
+                }
+            ],
+            'Нейрохирурги': [
+                {
+                    id: 1,
+                    name: 'Старков Антон Михаилович',
+                    specialty: 'Нейрохирург',
+                    experience: 'Опыт работы: 21 год',
+                    description: 'Врач-нейрохирург высшей категории. Специалист по операциям на головном мозге.',
+                    price: '8 000 ₽',
+                    photo: 'neurosurgeon_1.jpg',
+                    slots: ['09:00', '12:00', '15:00', '17:00']
+                },
+                {
+                    id: 2,
+                    name: 'Сторин Семен Артемович',
+                    specialty: 'Нейрохирург',
+                    experience: 'Опыт работы: 15 лет',
+                    description: 'Молодой нейрохирург. Специализируется на малоинвазивных операциях на позвоночнике.',
+                    price: '6 500 ₽',
+                    photo: 'neurosurgeon_2.jpg',
+                    slots: ['10:00', '13:00', '16:00', '18:00']
+                },
+                {
+                    id: 3,
+                    name: 'Алабамова Алла Борисовна',
+                    specialty: 'Нейрохирург',
+                    experience: 'Опыт работы: 26 лет',
+                    description: 'Доктор медицинских наук. Эксперт в области сосудистой нейрохирургии.',
+                    price: '9 000 ₽',
+                    photo: 'neurosurgeon_3.jpg',
+                    slots: ['08:00', '11:00', '14:00', '16:00']
+                }
+            ]
+        };
         
         this.init();
     }
 
     init() {
-        this.showCurrentCard();
+        // Получаем выбранную специальность из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedSpecialty = urlParams.get('specialty');
+        
+        if (!selectedSpecialty || !this.doctorsBySpecialty[selectedSpecialty]) {
+            // Если специальность не выбрана или не найдена, возвращаемся на главную
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Обновляем заголовок страницы
+        document.title = `СберЗдоровье - ${selectedSpecialty}`;
+        
+        // Получаем врачей для выбранной специальности
+        const doctors = this.doctorsBySpecialty[selectedSpecialty];
+        
+        // Создаем карточки врачей динамически
+        this.createDoctorCards(doctors);
+        
+        // Настраиваем обработчики событий
         this.setupEventListeners();
-        this.setupButtonListeners();
-        this.setupModalEventListeners();
+        
+        // Показываем первую карточку
+        if (this.cards.length > 0) {
+            this.cards[0].classList.add('active');
+        }
+    }
+
+    createDoctorCards(doctors) {
+        const cardsContainer = document.querySelector('.cards-container');
+        cardsContainer.innerHTML = ''; // Очищаем контейнер
+        
+        doctors.forEach((doctor, index) => {
+            const card = document.createElement('div');
+            card.className = `doctor-card ${index === 0 ? 'active' : ''}`;
+            card.setAttribute('data-doctor', doctor.id);
+            
+            card.innerHTML = `
+                <div class="card-image">
+                    <img src="${doctor.photo}" alt="${doctor.name}">
+                </div>
+                <div class="card-content">
+                    <h2 class="doctor-name">${doctor.name}</h2>
+                    <p class="doctor-specialty">${doctor.specialty}</p>
+                    <p class="doctor-experience">${doctor.experience}</p>
+                    <p class="doctor-description">${doctor.description}</p>
+                    <div class="price-section">
+                        <span class="price">${doctor.price}</span>
+                        <span class="price-label">за приём</span>
+                    </div>
+                    <div class="time-slots">
+                        <h3>Свободные слоты на сегодня:</h3>
+                        <div class="slots">
+                            ${doctor.slots.map(slot => `<button class="time-slot" data-time="${slot}">${slot}</button>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Добавляем обработчики событий для карточки
+            card.addEventListener('mousedown', this.handleMouseDown.bind(this));
+            card.addEventListener('contextmenu', e => e.preventDefault());
+            
+            cardsContainer.appendChild(card);
+            this.cards.push(card);
+        });
+        
+        // Добавляем глобальные обработчики для мыши и касаний
+        document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+        document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+        document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
     }
 
     showCurrentCard() {
@@ -224,59 +516,51 @@ class DoctorCardManager {
     }
 
     setupEventListeners() {
-        this.cards.forEach(card => {
-            // События мыши
-            card.addEventListener('mousedown', this.handleMouseDown.bind(this));
-            document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-            document.addEventListener('mouseup', this.handleMouseUp.bind(this));
-
-            // События касания для мобильных устройств
-            card.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-            document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-            document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-
-            // Предотвращаем контекстное меню
-            card.addEventListener('contextmenu', e => e.preventDefault());
+        // Обработчики для кнопок свайпа
+        document.getElementById('dislikeBtn').addEventListener('click', () => {
+            this.swipeCard('left');
         });
-    }
+        
+        document.getElementById('likeBtn').addEventListener('click', () => {
+            this.swipeCard('right');
+        });
 
-    setupButtonListeners() {
-        const likeBtn = document.getElementById('likeBtn');
-        const dislikeBtn = document.getElementById('dislikeBtn');
-
-        likeBtn.addEventListener('click', () => this.swipeCard('right'));
-        dislikeBtn.addEventListener('click', () => this.swipeCard('left'));
+        // Обработчики для модальных окон
+        this.setupModalEventListeners();
     }
 
     setupModalEventListeners() {
-        // Закрытие модальных окон
-        document.getElementById('closeSlotsModal').addEventListener('click', () => this.closeModal('slotsModal'));
-        document.getElementById('closeBookingModal').addEventListener('click', () => this.closeModal('bookingModal'));
-        document.getElementById('closeSuccessModal').addEventListener('click', () => this.closeModal('successModal'));
+        // Обработчики для модальных окон
+        document.getElementById('closeSlotsModal').addEventListener('click', () => {
+            this.closeModal('slotsModal');
+        });
         
-        // Кнопка "Назад к слотам"
+        document.getElementById('closeBookingModal').addEventListener('click', () => {
+            this.closeModal('bookingModal');
+        });
+        
+        document.getElementById('closeSuccessModal').addEventListener('click', () => {
+            this.closeModal('successModal');
+        });
+        
         document.getElementById('backToSlots').addEventListener('click', () => {
-            // Закрываем текущее модальное окно и показываем выбор слотов
             this.closeModal('bookingModal');
             this.showSlotsModal();
         });
         
-        // Кнопка "Завершить"
-        document.getElementById('finishBooking').addEventListener('click', () => this.finishBooking());
-        
-        // Форма записи
-        document.getElementById('bookingForm').addEventListener('submit', (e) => this.handleBookingSubmit(e));
-        
-        // Закрытие модальных окон при клике вне их
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    this.closeModal(modal.id);
-                }
-            });
+        document.getElementById('finishBooking').addEventListener('click', () => {
+            this.finishBooking();
         });
         
-        // Закрытие модальных окон по клавише Escape
+        // Обработчик для формы записи
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            this.handleBookingSubmit(e);
+        });
+        
+        // Настраиваем маску для номера телефона
+        this.setupPhoneMask();
+        
+        // Закрытие по Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.closeAllModals();
@@ -284,157 +568,320 @@ class DoctorCardManager {
         });
     }
 
-    handleMouseDown(e) {
-        const card = e.currentTarget;
-        if (!card.classList.contains('active')) return;
-
-        this.startDragging(e.clientX, e.clientY, card);
+    setupPhoneMask() {
+        const phoneInput = document.getElementById('phoneNumber');
+        
+        // Устанавливаем начальное значение
+        phoneInput.value = '+7 (';
+        
+        // Обработчик ввода
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value;
+            let digits = value.replace(/\D/g, ''); // Убираем все нецифры
+            
+            // Ограничиваем до 10 цифр
+            if (digits.length > 10) {
+                digits = digits.substring(0, 10);
+            }
+            
+            // Форматируем номер
+            let formattedValue = '+7 (';
+            
+            if (digits.length > 0) {
+                // Добавляем код оператора
+                formattedValue += digits.substring(0, 3);
+                
+                if (digits.length > 3) {
+                    formattedValue += ') ';
+                    formattedValue += digits.substring(3, 6);
+                    
+                    if (digits.length > 6) {
+                        formattedValue += '-';
+                        formattedValue += digits.substring(6, 8);
+                        
+                        if (digits.length > 8) {
+                            formattedValue += '-';
+                            formattedValue += digits.substring(8, 10);
+                        }
+                    }
+                }
+            }
+            
+            // Обновляем значение только если оно изменилось
+            if (e.target.value !== formattedValue) {
+                e.target.value = formattedValue;
+            }
+        });
+        
+        // Обработчик удаления
+        phoneInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace') {
+                const value = e.target.value;
+                const cursorPosition = e.target.selectionStart;
+                
+                // Если курсор находится в начале, не даем удалить +7
+                if (cursorPosition <= 4) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                // Если удаляем символ после цифры, удаляем всю цифру
+                if (cursorPosition > 4 && cursorPosition < value.length) {
+                    const charBeforeCursor = value[cursorPosition - 1];
+                    if (/\d/.test(charBeforeCursor)) {
+                        // Удаляем последнюю цифру
+                        const currentDigits = value.replace(/\D/g, '');
+                        const newDigits = currentDigits.slice(0, -1);
+                        
+                        // Переформатируем номер
+                        setTimeout(() => {
+                            if (newDigits.length > 0) {
+                                phoneInput.value = this.formatPhoneNumber(newDigits);
+                            } else {
+                                phoneInput.value = '+7 (';
+                            }
+                            // Устанавливаем курсор в конец
+                            phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+                        }, 0);
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+        
+        // Обработчик вставки
+        phoneInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const digits = pastedText.replace(/\D/g, '').substring(0, 10);
+            
+            if (digits.length > 0) {
+                phoneInput.value = this.formatPhoneNumber(digits);
+                phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+            }
+        });
+        
+        // Обработчик клика - устанавливаем курсор в правильное место
+        phoneInput.addEventListener('click', (e) => {
+            const value = e.target.value;
+            const cursorPosition = e.target.selectionStart;
+            
+            // Если курсор находится в служебных символах, перемещаем его
+            if (cursorPosition <= 4) { // +7 (
+                e.target.setSelectionRange(4, 4);
+            } else if (cursorPosition === 6) { // после )
+                e.target.setSelectionRange(7, 7);
+            } else if (cursorPosition === 10) { // после первого пробела
+                e.target.setSelectionRange(11, 11);
+            } else if (cursorPosition === 14) { // после первого дефиса
+                e.target.setSelectionRange(15, 15);
+            } else if (cursorPosition === 17) { // после второго дефиса
+                e.target.setSelectionRange(18, 18);
+            }
+        });
+        
+        // Обработчик фокуса - устанавливаем курсор в конец
+        phoneInput.addEventListener('focus', (e) => {
+            const value = e.target.value;
+            if (value === '+7 (') {
+                e.target.setSelectionRange(4, 4);
+            } else {
+                e.target.setSelectionRange(value.length, value.length);
+            }
+        });
+        
+        // Обработчик потери фокуса - проверяем корректность
+        phoneInput.addEventListener('blur', (e) => {
+            const value = e.target.value;
+            const digits = value.replace(/\D/g, '');
+            
+            if (digits.length === 0) {
+                e.target.value = '+7 (';
+            }
+        });
     }
 
-    handleTouchStart(e) {
-        const card = e.currentTarget;
-        if (!card.classList.contains('active')) return;
-
-        const touch = e.touches[0];
-        this.startDragging(touch.clientX, touch.clientY, card);
-        e.preventDefault();
-    }
-
-    startDragging(startX, startY, card) {
-        this.isDragging = true;
-        this.startX = startX;
-        this.startY = startY;
-        this.currentX = startX;
-        this.currentY = startY;
+    formatPhoneNumber(digits) {
+        let formattedValue = '+7 (';
         
-        card.classList.add('dragging');
-        this.initialTransform = card.style.transform;
-        
-        // Добавляем плавность
-        card.style.transition = 'none';
-    }
-
-    handleMouseMove(e) {
-        if (!this.isDragging) return;
-        this.updateDrag(e.clientX, e.clientY);
-    }
-
-    handleTouchMove(e) {
-        if (!this.isDragging) return;
-        const touch = e.touches[0];
-        this.updateDrag(touch.clientX, touch.clientY);
-        e.preventDefault();
-    }
-
-    updateDrag(currentX, currentY) {
-        this.currentX = currentX;
-        this.currentY = currentY;
-
-        const deltaX = this.currentX - this.startX;
-        const deltaY = this.currentY - this.startY;
-        
-        // Ограничиваем вертикальное движение
-        const limitedDeltaY = deltaY * 0.3;
-        
-        // Вычисляем угол поворота на основе горизонтального движения
-        const rotation = deltaX * 0.1;
-        
-        // Применяем трансформацию
-        const activeCard = document.querySelector('.doctor-card.active');
-        if (activeCard) {
-            activeCard.style.transform = `translate(${deltaX}px, ${limitedDeltaY}px) rotate(${rotation}deg)`;
+        if (digits.length > 0) {
+            // Добавляем код оператора
+            formattedValue += digits.substring(0, 3);
+            
+            if (digits.length > 3) {
+                formattedValue += ') ';
+                formattedValue += digits.substring(3, 6);
+                
+                if (digits.length > 6) {
+                    formattedValue += '-';
+                    formattedValue += digits.substring(6, 8);
+                    
+                    if (digits.length > 8) {
+                        formattedValue += '-';
+                        formattedValue += digits.substring(8, 10);
+                    }
+                }
+            }
         }
-    }
-
-    handleMouseUp() {
-        if (!this.isDragging) return;
-        this.endDragging();
-    }
-
-    handleTouchEnd() {
-        if (!this.isDragging) return;
-        this.endDragging();
-    }
-
-    endDragging() {
-        if (!this.isDragging) return;
-
-        const activeCard = document.querySelector('.doctor-card.active');
-        if (!activeCard) return;
-
-        const deltaX = this.currentX - this.startX;
-        const threshold = 100; // Минимальное расстояние для свайпа
-
-        if (Math.abs(deltaX) > threshold) {
-            // Свайп произошел
-            const direction = deltaX > 0 ? 'right' : 'left';
-            this.swipeCard(direction);
-        } else {
-            // Возвращаем карточку на место
-            this.resetCard(activeCard);
-        }
-
-        this.isDragging = false;
-        activeCard.classList.remove('dragging');
-    }
-
-    resetCard(card) {
-        card.style.transition = 'transform 0.3s ease';
-        card.style.transform = this.initialTransform;
         
-        // Убираем inline стили после анимации
-        setTimeout(() => {
-            card.style.transition = '';
-            card.style.transform = '';
-        }, 300);
+        return formattedValue;
     }
 
     swipeCard(direction) {
         const activeCard = document.querySelector('.doctor-card.active');
         if (!activeCard) return;
-
-        // Добавляем класс для анимации свайпа
-        activeCard.classList.add(`swipe-${direction}`);
         
-        // Убираем класс dragging
-        activeCard.classList.remove('dragging');
-        
-        // Убираем inline стили
-        activeCard.style.transition = '';
-        activeCard.style.transform = '';
-
         if (direction === 'right') {
+            activeCard.classList.add('swipe-right');
+            activeCard.style.transform = 'translateX(100vw)';
+            activeCard.style.transition = 'transform 0.5s ease-out';
+            
             // Показываем модальное окно выбора слотов
-            this.showSlotsModal();
+            setTimeout(() => {
+                this.showSlotsModal();
+            }, 500);
         } else {
+            activeCard.classList.add('swipe-left');
+            activeCard.style.transform = 'translateX(-100vw)';
+            activeCard.style.transition = 'transform 0.5s ease-out';
+            
             // Переходим к следующей карточке
             setTimeout(() => {
                 this.nextCard();
-            }, 300);
+            }, 500);
+        }
+    }
+
+    nextCard() {
+        const activeCard = document.querySelector('.doctor-card.active');
+        if (activeCard) {
+            activeCard.classList.remove('active');
+        }
+        
+        this.currentCardIndex++;
+        
+        if (this.currentCardIndex >= this.cards.length) {
+            // Все карточки просмотрены, возвращаемся на главную
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Показываем следующую карточку
+        if (this.cards[this.currentCardIndex]) {
+            this.cards[this.currentCardIndex].classList.add('active');
+        }
+        
+        // Сбрасываем стили предыдущей карточки
+        if (activeCard) {
+            activeCard.classList.remove('swipe-left', 'swipe-right');
+            activeCard.style.transform = '';
+            activeCard.style.transition = '';
+        }
+    }
+
+    // Методы для обработки свайпа мышью и касанием
+    handleMouseDown(e) {
+        this.isDragging = true;
+        this.startX = e.clientX;
+        this.currentX = this.startX;
+        this.initialTransform = '';
+        
+        const activeCard = document.querySelector('.doctor-card.active');
+        if (activeCard) {
+            this.initialTransform = activeCard.style.transform;
+        }
+    }
+
+    handleMouseMove(e) {
+        if (!this.isDragging) return;
+        
+        this.currentX = e.clientX;
+        this.updateDrag();
+    }
+
+    handleMouseUp() {
+        if (!this.isDragging) return;
+        
+        this.isDragging = false;
+        this.handleDragEnd();
+    }
+
+    handleTouchStart(e) {
+        this.isDragging = true;
+        this.startX = e.touches[0].clientX;
+        this.currentX = this.startX;
+        this.initialTransform = '';
+        
+        const activeCard = document.querySelector('.doctor-card.active');
+        if (activeCard) {
+            this.initialTransform = activeCard.style.transform;
+        }
+    }
+
+    handleTouchMove(e) {
+        if (!this.isDragging) return;
+        
+        e.preventDefault();
+        this.currentX = e.touches[0].clientX;
+        this.updateDrag();
+    }
+
+    handleTouchEnd() {
+        if (!this.isDragging) return;
+        
+        this.isDragging = false;
+        this.handleDragEnd();
+    }
+
+    updateDrag() {
+        const activeCard = document.querySelector('.doctor-card.active');
+        if (!activeCard) return;
+        
+        const deltaX = this.currentX - this.startX;
+        const translateX = deltaX;
+        
+        activeCard.style.transform = `translateX(${translateX}px)`;
+    }
+
+    handleDragEnd() {
+        const activeCard = document.querySelector('.doctor-card.active');
+        if (!activeCard) return;
+        
+        const deltaX = this.currentX - this.startX;
+        const threshold = 100; // Минимальное расстояние для свайпа
+        
+        if (Math.abs(deltaX) > threshold) {
+            if (deltaX > 0) {
+                this.swipeCard('right');
+            } else {
+                this.swipeCard('left');
+            }
+        } else {
+            // Возвращаем карточку на место
+            activeCard.style.transform = this.initialTransform || '';
         }
     }
 
     showSlotsModal() {
-        const currentDoctor = this.doctorsData[this.currentCardIndex];
+        const currentDoctor = this.doctorsBySpecialty[this.getCurrentSpecialty()][this.currentCardIndex];
         this.selectedDoctor = currentDoctor;
         
-        // Заполняем информацию о враче
+        // Заполняем информацию о враче в модальном окне
         document.getElementById('modalDoctorPhoto').src = currentDoctor.photo;
         document.getElementById('modalDoctorName').textContent = currentDoctor.name;
         document.getElementById('modalDoctorSpecialty').textContent = currentDoctor.specialty;
         document.getElementById('modalDoctorPrice').textContent = currentDoctor.price;
         
-        // Создаем слоты времени
+        // Создаем сетку слотов
         const slotsGrid = document.getElementById('modalSlotsGrid');
         slotsGrid.innerHTML = '';
         
-        currentDoctor.slots.forEach(time => {
-            const slotBtn = document.createElement('button');
-            slotBtn.className = 'time-slot';
-            slotBtn.textContent = time;
-            slotBtn.dataset.time = time;
-            slotBtn.addEventListener('click', () => this.selectTimeSlot(time));
-            slotsGrid.appendChild(slotBtn);
+        currentDoctor.slots.forEach(slot => {
+            const slotButton = document.createElement('button');
+            slotButton.className = 'time-slot-btn';
+            slotButton.textContent = slot;
+            slotButton.addEventListener('click', () => this.selectTimeSlot(slot));
+            slotsGrid.appendChild(slotButton);
         });
         
         // Показываем модальное окно
@@ -446,6 +893,11 @@ class DoctorCardManager {
         this.showBookingModal();
     }
 
+    getCurrentSpecialty() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('specialty');
+    }
+
     showBookingModal() {
         // Заполняем детали записи
         document.getElementById('bookingDoctorName').textContent = this.selectedDoctor.name;
@@ -453,23 +905,31 @@ class DoctorCardManager {
         document.getElementById('bookingDate').textContent = this.getCurrentDate();
         document.getElementById('bookingPrice').textContent = this.selectedDoctor.price;
         
-        // Очищаем предыдущие ошибки
-        this.clearErrors();
-        
         // Показываем модальное окно
         this.closeModal('slotsModal');
         this.openModal('bookingModal');
     }
 
-    handleBookingSubmit(e) {
-        e.preventDefault();
+    handleBookingSubmit(event) {
+        event.preventDefault();
         
         const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        
+        // Проверяем, что номер соответствует формату +7 (XXX) XXX-XX-XX
+        const phoneRegex = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
         
         if (!phoneNumber) {
             this.showError('phoneNumber', 'Необходимо ввести номер телефона');
             return;
         }
+        
+        if (!phoneRegex.test(phoneNumber)) {
+            this.showError('phoneNumber', 'Номер должен быть в формате +7 (XXX) XXX-XX-XX');
+            return;
+        }
+        
+        // Очищаем ошибки
+        this.clearErrors();
         
         // Показываем экран успеха
         this.showSuccessModal(phoneNumber);
@@ -494,117 +954,34 @@ class DoctorCardManager {
         // Останавливаем конфетти
         this.stopConfetti();
         
-        // Закрываем все модальные окна и переходим к следующей карточке
+        // Закрываем все модальные окна
         this.closeModal('successModal');
-        this.nextCard();
         
-        // Сбрасываем выбранные данные
-        this.selectedDoctor = null;
-        this.selectedTime = null;
-    }
-
-    nextCard() {
-        // Убираем классы свайпа с предыдущей карточки
-        this.cards.forEach(card => {
-            card.classList.remove('swipe-left', 'swipe-right');
-        });
-
-        // Переходим к следующей карточке
-        this.currentCardIndex++;
-        
-        if (this.currentCardIndex >= this.cards.length) {
-            // Все карточки просмотрены
-            this.showEndMessage();
-            return;
-        }
-
-        // Показываем следующую карточку
-        this.showCurrentCard();
+        // Возвращаемся на главную страницу выбора специальности
+        window.location.href = 'index.html';
     }
 
     showEndMessage() {
-        const cardsContainer = document.querySelector('.cards-container');
-        const actionButtons = document.querySelector('.action-buttons');
-        const instructions = document.querySelector('.swipe-instructions');
-
-        // Скрываем кнопки и инструкции
-        actionButtons.style.display = 'none';
-        instructions.style.display = 'none';
-
-        // Показываем сообщение о завершении
-        const endMessage = document.createElement('div');
-        endMessage.className = 'end-message';
-        endMessage.innerHTML = `
-            <div class="end-content">
-                <h2>🎉 Все врачи просмотрены!</h2>
-                <p>Вы просмотрели всех доступных неврологов.</p>
-                <button class="restart-btn" onclick="location.reload()">Начать заново</button>
+        // Показываем сообщение о том, что все врачи просмотрены
+        const mainContent = document.querySelector('.main');
+        mainContent.innerHTML = `
+            <div class="end-message">
+                <h2>Все врачи просмотрены</h2>
+                <p>Вы просмотрели всех доступных врачей данной специальности.</p>
+                <button class="btn-primary" onclick="window.location.href='index.html'">
+                    Выбрать другую специальность
+                </button>
             </div>
         `;
-        
-        cardsContainer.innerHTML = '';
-        cardsContainer.appendChild(endMessage);
-
-        // Добавляем стили для сообщения о завершении
-        const style = document.createElement('style');
-        style.textContent = `
-            .end-message {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                text-align: center;
-            }
-            .end-content h2 {
-                color: #21A038;
-                margin-bottom: 15px;
-                font-size: 1.8rem;
-            }
-            .end-content p {
-                color: #666;
-                margin-bottom: 25px;
-                font-size: 1.1rem;
-            }
-            .restart-btn {
-                background: #21A038;
-                color: white;
-                border: none;
-                padding: 15px 30px;
-                border-radius: 25px;
-                font-size: 1.1rem;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            .restart-btn:hover {
-                background: #1D8836;
-                transform: translateY(-2px);
-            }
-        `;
-        document.head.appendChild(style);
     }
 
     // Утилиты для модальных окон
     openModal(modalId) {
         const modal = document.getElementById(modalId);
+        if (!modal) return;
         
-        // Принудительно центрируем модальное окно
-        modal.style.display = 'flex';
-        modal.style.alignItems = 'center';
-        modal.style.justifyContent = 'center';
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        
-        // Добавляем класс show
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
-        
-        // Дополнительная проверка центрирования
-        setTimeout(() => {
-            this.ensureModalCentered(modal);
-        }, 10);
     }
 
     closeModal(modalId) {
@@ -618,16 +995,6 @@ class DoctorCardManager {
         
         // Убираем класс show
         modal.classList.remove('show');
-        
-        // Сбрасываем inline стили
-        modal.style.display = '';
-        modal.style.alignItems = '';
-        modal.style.justifyContent = '';
-        modal.style.position = '';
-        modal.style.top = '';
-        modal.style.left = '';
-        modal.style.width = '';
-        modal.style.height = '';
         
         // Восстанавливаем overflow для body
         document.body.style.overflow = '';
@@ -676,32 +1043,28 @@ class DoctorCardManager {
 
     showError(fieldId, message) {
         const field = document.getElementById(fieldId);
-        const errorElement = document.getElementById(fieldId.replace('Number', '') + 'Error');
+        const errorDiv = document.getElementById(fieldId.replace('Number', '') + 'Error');
         
-        field.classList.add('error');
-        if (errorElement) {
-            errorElement.textContent = message;
+        if (field && errorDiv) {
+            field.classList.add('error');
+            errorDiv.textContent = message;
         }
     }
 
     clearErrors() {
-        const phoneField = document.getElementById('phoneNumber');
-        const phoneError = document.getElementById('phoneError');
+        const errorFields = document.querySelectorAll('.error');
+        const errorMessages = document.querySelectorAll('.error-message');
         
-        phoneField.classList.remove('error');
-        if (phoneError) {
-            phoneError.textContent = '';
-        }
+        errorFields.forEach(field => field.classList.remove('error'));
+        errorMessages.forEach(message => message.textContent = '');
     }
 
     getCurrentDate() {
         const today = new Date();
-        const options = { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        };
-        return today.toLocaleDateString('ru-RU', options);
+        const day = today.getDate().toString().padStart(2, '0');
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const year = today.getFullYear();
+        return `${day}.${month}.${year}`;
     }
 
     closeAllModals() {
@@ -710,17 +1073,9 @@ class DoctorCardManager {
             this.closeModal(modalId);
         });
         
-        // Возвращаемся к начальному состоянию
+        // Сбрасываем выбранные данные
         this.selectedDoctor = null;
         this.selectedTime = null;
-        
-        // Возвращаем карточку на место
-        const activeCard = document.querySelector('.doctor-card.active');
-        if (activeCard) {
-            activeCard.classList.remove('swipe-right', 'swipe-left');
-            activeCard.style.transform = '';
-            activeCard.style.transition = '';
-        }
     }
 
     startConfetti() {
@@ -782,8 +1137,8 @@ class DoctorCardManager {
 }
 
 // Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
-    new DoctorCardManager();
+document.addEventListener('DOMContentLoaded', function() {
+    window.doctorCardManager = new DoctorCardManager();
 });
 
 // Добавляем обработчики для временных слотов на карточках (для демонстрации)
