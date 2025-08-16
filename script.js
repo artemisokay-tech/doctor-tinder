@@ -935,6 +935,7 @@ class DoctorCardManager {
         document.getElementById('successDoctorName').textContent = this.selectedDoctor.name;
         document.getElementById('successSpecialty').textContent = this.selectedDoctor.specialty;
         document.getElementById('successDateTime').textContent = `${this.getCurrentDate()} в ${this.selectedTime}`;
+        document.getElementById('successPrice').textContent = this.selectedDoctor.price;
         document.getElementById('successPhone').textContent = phoneNumber;
         
         // Показываем модальное окно
